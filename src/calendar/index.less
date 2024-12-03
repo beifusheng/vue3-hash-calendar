@@ -1,0 +1,351 @@
+@import './style/common.less';
+
+.hash-calendar {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-size: 4vw;
+
+  &.calendar_inline {
+    position: relative;
+    width: 100%;
+    height: auto;
+    background: none;
+    z-index: 1;
+
+    .calendar_content {
+      position: relative;
+      left: unset;
+      bottom: unset;
+    }
+
+    .calendar_title {
+      position: relative;
+      left: unset;
+      bottom: unset;
+    }
+  }
+
+  .calendar_content {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    background: white;
+    height: 710px;
+    overflow: hidden;
+  }
+
+  .calendar_title {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 710px;
+    .bgColor(background);
+    .borderBottom();
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1;
+  }
+
+  .calendar_title_date {
+    .viceFontColor(color);
+    background: white;
+    padding: 30px 15px;
+  }
+
+  .calendar_title_date_active {
+    .mainFontColor(color);
+    font-weight: bold;
+  }
+
+  .calendar_title_date_time {
+    margin-left: 20px;
+  }
+
+  .calendar_confirm {
+    .mainColor(color);
+    margin-right: 34px;
+  }
+
+  .today_disable {
+    .disabledFontColor(color);
+  }
+
+  .ctrl-img {
+    width: 100%;
+    text-align: center;
+
+    img {
+      /* px-to-viewport-ignore-next */
+      width: 28px;
+    }
+  }
+
+  .calendar_body {
+    position: relative;
+    width: 100%;
+  }
+
+  .calendar_week {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    .flexAlign();
+    background: white;
+    .viceFontColor(color);
+    z-index: 2;
+  }
+
+  .calendar_group {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: 3px 0;
+    overflow: hidden;
+    transition: height 0.3s;
+    -webkit-transition: height 0.3s;
+  }
+
+  .calendar_group ul {
+    height: 100%;
+  }
+
+  .calendar_group_ul {
+    height: 100%;
+    width: 100%;
+    background: white;
+  }
+
+  .calendar_group_li {
+    position: absolute;
+    top: 0;
+    left: 4px;
+    bottom: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    .flexAlign();
+    flex-wrap: wrap;
+    background: white;
+    will-change: transform;
+  }
+
+  .calendar_item {
+    position: relative;
+    width: 14.13333335%;
+    .flexContent();
+  }
+
+  .calendar_item_disable {
+    .disabledBgColor(background-color);
+    opacity: 1;
+    cursor: not-allowed;
+    .disabledFontColor(color);
+  }
+
+  .calendar_day {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    .fontSize(28px);
+    .flexContent();
+    margin-bottom: 8px;
+    .mainFontColor(color);
+  }
+
+  .calendar_first_today {
+    .mainColor(color);
+  }
+
+  .calendar_first_today span {
+    .fontSize(20px);
+    margin-top: 3px;
+  }
+
+  .calendar_day_today {
+    .bgColor(background);
+  }
+
+  .calendar_mark_circle {
+    border: 1px solid @main-color;
+  }
+
+  .calendar_day_not {
+    .disabledFontColor(color);
+  }
+
+  .calendar_day_checked {
+    .mainColor(background);
+    color: white;
+  }
+
+  .calendar_range_checked {
+    .calendar_day {
+      background: unset;
+    }
+  }
+
+  .calendar_range_start {
+    .mainColor(background);
+    /* px-to-viewport-ignore-next */
+    border-radius: 10px 0 0 10px;
+  }
+
+  .calendar_range_middle {
+    .mainColor(color);
+    .calendar_day {
+      .mainColor(color);
+    }
+    &:after {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: currentColor;
+      opacity: var(--hash-calendar-range-middle-background-opacity);
+      content: '';
+    }
+  }
+
+  .calendar_range_end {
+    .mainColor(background);
+    /* px-to-viewport-ignore-next */
+    border-radius: 0 10px 10px 0;
+  }
+
+  .calendar_range_start-end {
+    .mainColor(background);
+    /* px-to-viewport-ignore-next */
+    border-radius: 10px;
+  }
+
+  .calendar_dot {
+    position: absolute;
+    bottom: 0;
+    left: 49%;
+    /* px-to-viewport-ignore-next */
+    width: 5px;
+    /* px-to-viewport-ignore-next */
+    height: 5px;
+    border-radius: 50%;
+  }
+
+  .time_body {
+    width: 100%;
+    .flexContent();
+  }
+
+  .time_group {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    height: 360px;
+    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
+  }
+
+  .time_content {
+    touch-action: none;
+    padding: 0 40px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .time_item {
+    padding: 20px 0;
+    .viceFontColor(color);
+  }
+
+  .time_item_show {
+    .mainFontColor(color);
+  }
+
+  .time-disabled {
+    background-color: #f5f7fa;
+    opacity: 1;
+    cursor: not-allowed;
+    color: #c0c4cc;
+  }
+
+  .year-body {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    background: #fff;
+
+    &-item {
+      width: 33%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &.is_disabled {
+        .disabledBgColor(background-color);
+        opacity: 1;
+        cursor: not-allowed;
+        .disabledFontColor(color);
+      }
+
+      &-content {
+        /* px-to-viewport-ignore-next */
+        width: 60px;
+        /* px-to-viewport-ignore-next */
+        padding: 3px 0;
+        /* px-to-viewport-ignore-next */
+        border-radius: 3px;
+        text-align: center;
+
+        &.is_checked {
+          .mainColor(background);
+          color: white;
+        }
+
+        &.is_not_current {
+          .disabledFontColor(color);
+        }
+      }
+    }
+  }
+
+  // 重置标签默认样式
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  ul,
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}

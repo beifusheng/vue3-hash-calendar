@@ -1,0 +1,176 @@
+version: 18
+jobs:
+- name: CI/CD
+  jobExecutor: internal
+  steps:
+  - !CheckoutStep
+    name: checkout
+    cloneCredential: !DefaultCredential {}
+    withLfs: false
+    withSubmodules: true
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: build
+    runInContainer: false
+    image: node:14.19.1
+    interpreter: !DefaultInterpreter
+      commands:
+      - yarn
+      - yarn build:site
+      - ''
+      - cd ./site-dist
+      - tar -zcvf calendar.tar.gz *
+      - mv calendar.tar.gz /usr/share/nginx/hxkj/dist/calendar/
+      - cd /usr/share/nginx/hxkj/dist/calendar/
+      - tar -zxvf calendar.tar.gz
+      - rm -f calendar.tar.gz
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !BranchUpdateTrigger
+    branches: main
+  jobDependencies:
+  - jobName: test
+    requireSuccessful: true
+    artifacts: '**'
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  cpuRequirement: 250
+  memoryRequirement: 256
+  timeout: 3600
+- name: release
+  jobExecutor: internal
+  steps:
+  - !CheckoutStep
+    name: checkout
+    cloneCredential: !DefaultCredential {}
+    withLfs: false
+    withSubmodules: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: publish
+    runInContainer: false
+    interpreter: !DefaultInterpreter
+      commands:
+      - yarn
+      - yarn build
+      - cat > .npmrc <<-EOF
+      - //registry.npmjs.org/:_authToken=@secret:NPM_TOKEN@
+      - registry=https://registry.npmjs.org/
+      - home=https://www.npmjs.org
+      - EOF
+      - npm publish
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !TagCreateTrigger {}
+  jobDependencies:
+  - jobName: test
+    requireSuccessful: true
+    artifacts: '**'
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  cpuRequirement: 250
+  memoryRequirement: 256
+  timeout: 3600
+- name: test
+  jobExecutor: internal
+  steps:
+  - !CheckoutStep
+    name: checkout
+    cloneCredential: !DefaultCredential {}
+    withLfs: false
+    withSubmodules: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: test
+    runInContainer: false
+    interpreter: !DefaultInterpreter
+      commands:
+      - 'yarn '
+      - yarn test
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !BranchUpdateTrigger {}
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  cpuRequirement: 250
+  memoryRequirement: 256
+  timeout: 3600
+- name: Push to GitHub
+  steps:
+  - !CheckoutStep
+    name: checkout
+    cloneCredential: !DefaultCredential {}
+    withLfs: false
+    withSubmodules: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: push
+    runInContainer: false
+    interpreter: !DefaultInterpreter
+      commands:
+      - git config user.name "TangSY"
+      - git config user.email "337828932@@qq.com"
+      - git remote set-url origin git@@github.com:TangSY/vue3-hash-calendar.git
+      - git remote -v
+      - git push
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !BranchUpdateTrigger {}
+  - !TagCreateTrigger {}
+  retryCondition: never
+  maxRetries: 30
+  retryDelay: 30
+  cpuRequirement: 250
+  memoryRequirement: 256
+  timeout: 3600
+- name: Pull from GitHub
+  steps:
+  - !PullRepository
+    name: pull
+    remoteUrl: https://github.com/TangSY/vue3-hash-calendar
+    syncToChildProject: false
+    refs: refs/heads/* refs/tags/*
+    withLfs: false
+    force: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !ScheduleTrigger
+    cronExpression: 0 0 1 * * ?
+  retryCondition: never
+  maxRetries: 30
+  retryDelay: 30
+  cpuRequirement: 250
+  memoryRequirement: 256
+  timeout: 3600
+stepTemplates:
+- name: test template
+  steps:
+  - !CheckoutStep
+    name: checkout
+    cloneCredential: !DefaultCredential {}
+    withLfs: false
+    withSubmodules: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: install
+    runInContainer: false
+    interpreter: !DefaultInterpreter
+      commands:
+      - yarn
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: test
+    runInContainer: false
+    interpreter: !DefaultInterpreter
+      commands:
+      - yarn test
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
