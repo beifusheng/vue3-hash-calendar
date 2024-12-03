@@ -4,7 +4,7 @@
   "author": "HashTang",
   "repository": {
     "type": "git",
-    "url": "https://github.com/beifusheng/vue3-hash-calendar.git"
+    "url": "git+https://github.com/beifusheng/vue3-hash-calendar.git"
   },
   "bugs": {
     "url": "https://github.com/beifusheng/vue3-hash-calendar/issues"
@@ -62,5 +62,9 @@
   "browserslist": [
     "Chrome >= 51",
     "iOS >= 10"
-  ]
+  ],
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  }
 }
