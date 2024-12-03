@@ -1,3 +1,4 @@
+## 此依赖是基于TangSY/vue-hash-calendar进行部分迭代修改，如愿意请支持、加星原作者TangSY
 <p align="center">
     <img alt="logo" src="https://calendar.hxkj.vip/public/logo.png" width="190" height="80" style="margin-bottom: 10px;">
 </p>
